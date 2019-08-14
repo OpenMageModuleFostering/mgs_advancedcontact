@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/MGS_AdvancedContact",
+    "type": "magento-module",
+    "license": "OSL",
+    "homepage": "",
+    "description": "Allow administrator to add custom fields to magento contact form.",
+    "authors": [
+    {
+        "name": "Mage Solution",
+        "email": "info@magesolution.com"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}

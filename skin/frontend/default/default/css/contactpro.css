@@ -1,0 +1,30 @@
+#loading-mask {
+	color: #D85909;
+	font-size: 1.1em;
+	font-weight: bold;
+	opacity: 0.8;
+	position: absolute;
+	text-align: center;
+	z-index: 500;
+}
+	
+#loading-mask .loader {
+	background: none repeat scroll 0 0 #FFF4E9;
+	border: 2px solid #F1AF73;
+	color: #D85909;
+	font-weight: bold;
+	left: 50%;
+	margin-left: -60px;
+	padding: 15px 60px;
+	position: fixed;
+	text-align: center;
+	top: 45%;
+	width: 120px;
+	z-index: 1000;
+}
+.contactproform .column-right{
+	float:right;
+}
+.contactproform .column-left{
+	float:left;
+}
