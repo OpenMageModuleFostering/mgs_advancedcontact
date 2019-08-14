@@ -5,7 +5,7 @@ class MGS_Contactpro_CaptchaController extends Mage_Core_Controller_Front_Action
     public function renderAction()
     {
 		$path 	= Mage::getBaseDir('media') . DS . 'contactpro' . DS ;
-		$url 	= Mage::getUrl('media',array('_store' => (int)Mage::app()->getStore())) . 'contactpro/captcha/';
+		$url 	= Mage::getUrl('media',array('_store' => (int)Mage::app()->getStore()->getId())) . 'contactpro/captcha/';
 		
 		$captcha = new Zend_Captcha_Image();
 		$captcha->setImgDir($path . 'captcha' . DS);

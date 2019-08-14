@@ -33,7 +33,7 @@ class MGS_Contactpro_Block_Contactpro extends Mage_Core_Block_Template
 	}
 	
 	public function getAction(){
-		$url 	= Mage::getUrl('contactpro/index/post',array('_store' => (int)Mage::app()->getStore()));
+		$url 	= Mage::getUrl('contactpro/index/post',array('_store' => (int)Mage::app()->getStore()->getId()));
 		return $url;
 	}
 	
