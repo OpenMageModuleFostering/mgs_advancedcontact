@@ -17,4 +17,8 @@ class MGS_Contactpro_Helper_Data extends MGS_Mgscore_Helper_Data
 			return false;
 		}
 	}
+        
+        public function useCaptcha() {
+            return Mage::getStoreConfig('contactpro/settings/use_captcha');
+        }
 }

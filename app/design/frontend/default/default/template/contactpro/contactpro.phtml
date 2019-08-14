@@ -1,157 +1,171 @@
-<?php $helper = Mage::helper('contactpro');?>
-<?php if($helper->getEnable()):?>
-	<div class="contactproform">
-		<div class="page-title">
-			<h1><?php echo $this->__('Contact Us');?></h1>
-		</div>
-		<form method="post" id="contactpro" action="<?php echo $this->getAction();?>">
-			<div class="fieldset">
-				<h2 class="legend">Contact Information</h2>
-				<div class="2columns">
-					<?php if(($this->getStaticBlock() != '') || $this->getGmap() != ''):?>
-						<div class="column-right">
-							<?php echo $this->getStaticBlock();?>
-							<?php echo $this->getGmap();?>
-						</div>
-					<?php endif;?>
-					<div class="column-left">
-						<ul class="form-list">
-							<li class="fields">
-                                                                <label class="required" for="full-name"><em>*</em><?php echo $this->__('Full Name');?></label>
-								<div class="input-box">
-									<input type="text" class="input-text required-entry" value="<?php echo $this->getFullName();?>" title="<?php echo $this->__('Full Name');?>" id="full-name" name="full-name"/>
-								</div>
-							</li>
-							<li>
-								<label class="required" for="email"><em>*</em><?php echo $this->__('Email');?></label>
-								<div class="input-box">
-									<input type="text" class="input-text required-entry validate-email" value="<?php echo $this->getEmail();?>" title="<?php echo $this->__('Email');?>" id="email" name="email"/>
-								</div>
-							</li>
-							
-							<?php if(count($this->getFields())):?>
-								<?php foreach($this->getFields() as $field):?>
-									<?php if($field->getRequired() == 1):?>
-										<?php  $label 				= '<em>*</em>'. $field->getLabel();?>
-										<?php  $classRequired 		= ' required-entry';?>
-										<?php  $classRequiredLabel 	= ' required';?>
-									<?php else:?>
-										<?php  $label 				= $field->getLabel();?>
-										<?php  $classRequired 		= '';?>
-										<?php  $classRequiredLabel 	= '';?>
-									<?php endif;?>
-									<li>
-										<label class='<?php echo $classRequiredLabel;?>' for="<?php echo $helper->getCode($field->getLabel());?>"><?php echo $label;?></label>
-										<div class="input-box">
-											<input type="text" class="input-text <?php echo $classRequired;?>" value="" title="<?php echo $field->getLabel();?>" id="<?php echo $helper->getCode($field->getLabel());?>" name="<?php echo $helper->getCode($field->getLabel());?>"/>
-										</div>
-									</li>
-								<?php endforeach;?>
-							<?php endif;?>
-							
-							<li>		
-								<label></label>
-								<div class="input-box">
-									<div id="captcha-view"></div>
-									<button class="button" id="reload"  title="<?php echo $this->__('Reload');?>" type="button">
-										<span><span><?php echo $this->__('Reload');?></span></span>
-									</button>
-								</div>
-							</li>
-							<li>
-								<label class="required" for="captcha"><em>*</em><?php echo $this->__('Captcha');?></label>
-								<div class="input-box">
-									<input type="text" class="input-text required-entry" value="" title="<?php echo $this->__('Captcha');?>" id="captcha" name="captcha"/>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div style="height:0;clear:both">&nbsp;</div>
-					<ul class="form-list">
-						<li class="wide">
-							<label class="required" for="comment"><em>*</em><?php echo $this->__('Comment');?></label>
-							<div class="input-box">
-								<textarea rows="3" cols="5" class="required-entry input-text" title="<?php echo $this->__('Comment');?>" id="comment" name="comment"></textarea>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</div>
-			
-			<div class="buttons-set">
-				<p class="required"><?php echo $this->__('* Required Fields');?></p>
-				<button class="button" id="button-submit"  title="<?php echo $this->__('Submit');?>" type="button">
-					<span><span><?php echo $this->__('Submit');?></span></span>
-				</button>
-			</div>
-		</form>
-		<div style="display:none" id="loading-mask">
-			<p id="loading_mask_loader" class="loader">
-				<img alt="<?php echo $this->__('Loading...');?>" src="<?php echo $this->getSkinUrl('images/ajax-loader-tr.gif');?>">
-				<br>Please wait...
-			</p>
-		</div>
-		<script type="text/javascript">
-		//<![CDATA[
-			Event.observe(window, 'load',function(){
-				var contactpro = new VarienForm('contactpro', true);
-				
-				renderCaptcha();
-				
-				$('reload').observe('click',function(){
-					renderCaptcha();
-				});
-				
-				$('contactpro').observe('keydown',function(event){
-					if(event.keyCode == 13){
-						submitForm();
-					}
-				});
-				
-				$('button-submit').observe('click',function(){
-					submitForm();
-				});		
-				
-				function submitForm(){
-					var submit = false;
-					if(contactpro.validator && contactpro.validator.validate()){
-						submit = true;
-					}
-					
-					url = '<?php echo $this->getUrl('contactpro/captcha/check');?>';
-					if(submit){
-						new Ajax.Request(url, {
-							method: 'post',
-							parameters: {captcha: $('captcha').value},
-							onSuccess: function(transport){
-								var data = transport.responseText.evalJSON();
-								if(data.result == 1){
-									contactpro.submit();
-								}else{
-									$('captcha').value = '';
-									contactpro.validator.validate();
-								}
-							}
-						});
-					}
-				};
-				
-				function renderCaptcha(){
-					$('loading-mask').show();
-					var url = '<?php echo $this->getUrl('contactpro/captcha/render');?>';
-					new Ajax.Request(url, {
-						method: 'post',
-						onSuccess: function(transport){
-							$('captcha-view').update(transport.responseText);
-							$('loading-mask').hide();
-						}
-					});
-				}
-			});
-		   
-		//]]>
-		</script>
-                <!-- Copyright -->
-                <div style="position:absolute;top:-8888px;">Copyright &copy;2011&nbsp;<a href="http://www.magesolution.com/">Magesolution.com</a>&nbsp;|&nbsp;<a href="http://www.magesolution.com/magento-advance-contact.html">Advance Contact form</a></div>
-	</div>
+<?php $helper = Mage::helper('contactpro'); ?>
+<?php if ($helper->getEnable()): ?>
+    <div class="contactproform">
+        <div class="page-title">
+            <h1><?php echo $this->__('Contact Us'); ?></h1>
+        </div>
+        <form method="post" id="contactpro" action="<?php echo $this->getAction(); ?>">
+            <div class="fieldset">
+                <h2 class="legend">Contact Information</h2>
+                <div class="2columns">
+                    <?php if (($this->getStaticBlock() != '') || $this->getGmap() != ''): ?>
+                        <div class="column-right">
+                            <?php echo $this->getStaticBlock(); ?>
+                            <?php echo $this->getGmap(); ?>
+                        </div>
+                    <?php endif; ?>
+                    <div class="column-left">
+                        <ul class="form-list">
+                            <li class="fields">
+                                <div class="input-box">
+                                    <label class="required" for="full-name"><em>*</em><?php echo $this->__('Full Name'); ?></label>
+                                    <input type="text" class="input-text required-entry" value="<?php echo $this->getFullName(); ?>" title="<?php echo $this->__('Full Name'); ?>" id="full-name" name="full-name"/>
+                                </div>
+                            </li>
+                            <li>
+                                <label class="required" for="email"><em>*</em><?php echo $this->__('Email'); ?></label>
+                                <div class="input-box">
+                                    <input type="text" class="input-text required-entry validate-email" value="<?php echo $this->getEmail(); ?>" title="<?php echo $this->__('Email'); ?>" id="email" name="email"/>
+                                </div>
+                            </li>
+
+                            <?php if (count($this->getFields())): ?>
+                                <?php foreach ($this->getFields() as $field): ?>
+                                    <?php if ($field->getRequired() == 1): ?>
+                                        <?php $label = '<em>*</em>' . $field->getLabel(); ?>
+                                        <?php $classRequired = ' required-entry'; ?>
+                                        <?php $classRequiredLabel = ' required'; ?>
+                                    <?php else: ?>
+                                        <?php $label = $field->getLabel(); ?>
+                                        <?php $classRequired = ''; ?>
+                                        <?php $classRequiredLabel = ''; ?>
+                                    <?php endif; ?>
+                                    <li>
+                                        <label class='<?php echo $classRequiredLabel; ?>' for="<?php echo $helper->getCode($field->getLabel()); ?>"><?php echo $label; ?></label>
+                                        <div class="input-box">
+                                            <input type="text" class="input-text <?php echo $classRequired; ?>" value="" title="<?php echo $field->getLabel(); ?>" id="<?php echo $helper->getCode($field->getLabel()); ?>" name="<?php echo $helper->getCode($field->getLabel()); ?>"/>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                            <?php if($helper->useCaptcha()): ?>
+                            <li>		
+                                <label></label>
+                                <div class="input-box">
+                                    <div id="captcha-view"></div>
+                                    <button class="button" id="reload"  title="<?php echo $this->__('Reload'); ?>" type="button">
+                                        <span><span><?php echo $this->__('Reload'); ?></span></span>
+                                    </button>
+                                </div>
+                            </li>
+                            <li>
+                                <label class="required" for="captcha"><em>*</em><?php echo $this->__('Captcha'); ?></label>
+                                <div class="input-box">
+                                    <input type="text" class="input-text required-entry" value="" title="<?php echo $this->__('Captcha'); ?>" id="captcha" name="captcha"/>
+                                </div>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                    <div style="height:0;clear:both">&nbsp;</div>
+                    <ul class="form-list">
+                        <li class="wide">
+                            <label class="required" for="comment"><em>*</em><?php echo $this->__('Comment'); ?></label>
+                            <div class="input-box">
+                                <textarea rows="3" cols="5" class="required-entry input-text" title="<?php echo $this->__('Comment'); ?>" id="comment" name="comment"></textarea>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <?php if($helper->useCaptcha()): ?>
+            <div class="buttons-set">
+                <p class="required"><?php echo $this->__('* Required Fields'); ?></p>
+                <button class="button" id="button-submit"  title="<?php echo $this->__('Submit'); ?>" type="button">
+                    <span><span><?php echo $this->__('Submit'); ?></span></span>
+                </button>
+            </div>
+            <?php else: ?>
+            <div class="buttons-set">
+                <p class="required"><?php echo $this->__('* Required Fields'); ?></p>
+                <button class="button" id="button-submit"  title="<?php echo $this->__('Submit'); ?>" type="submit">
+                    <span><span><?php echo $this->__('Submit'); ?></span></span>
+                </button>
+            </div>
+            <?php endif; ?>
+        </form>
+        <div style="display:none" id="loading-mask">
+            <p id="loading_mask_loader" class="loader">
+                <img alt="<?php echo $this->__('Loading...'); ?>" src="<?php echo $this->getSkinUrl('images/ajax-loader-tr.gif'); ?>">
+                <br>Please wait...
+            </p>
+        </div>
+        <script type="text/javascript">
+            //<![CDATA[
+            Event.observe(window, 'load', function() {
+                var contactpro = new VarienForm('contactpro', true);
+
+                <?php if($helper->useCaptcha()): ?>
+                renderCaptcha();
+
+                $('reload').observe('click', function() {
+                    renderCaptcha();
+                });
+                <?php endif; ?>
+
+                $('contactpro').observe('keydown', function(event) {
+                    if (event.keyCode == 13) {
+                        submitForm();
+                    }
+                });
+
+                $('button-submit').observe('click', function() {
+                    submitForm();
+                });
+
+                function submitForm() {
+                    var submit = false;
+                    if (contactpro.validator && contactpro.validator.validate()) {
+                        submit = true;
+                    }
+                    <?php if($helper->useCaptcha()): ?>
+                    url = '<?php echo $this->getUrl('contactpro/captcha/check'); ?>';
+                    if (submit) {
+                        new Ajax.Request(url, {
+                            method: 'post',
+                            parameters: {captcha: $('captcha').value},
+                            onSuccess: function(transport) {
+                                var data = transport.responseText.evalJSON();
+                                if (data.result == 1) {
+                                    contactpro.submit();
+                                } else {
+                                    $('captcha').value = '';
+                                    contactpro.validator.validate();
+                                }
+                            }
+                        });
+                    }
+                    <?php endif; ?>
+                }
+                ;
+                <?php if($helper->useCaptcha()): ?>
+                function renderCaptcha() {
+                    $('loading-mask').show();
+                    var url = '<?php echo $this->getUrl('contactpro/captcha/render'); ?>';
+                    new Ajax.Request(url, {
+                        method: 'post',
+                        onSuccess: function(transport) {
+                            $('captcha-view').update(transport.responseText);
+                            $('loading-mask').hide();
+                        }
+                    });
+                }
+                <?php endif; ?>
+            });
+
+            //]]>
+        </script>
+        <!-- Copyright -->
+        <div style="position:absolute;top:-8888px;">Copyright &copy;2011&nbsp;<a href="http://www.magesolution.com/">Magesolution.com</a>&nbsp;|&nbsp;<a href="http://www.magesolution.com/magento-advance-contact.html">Advance Contact form</a></div>
+    </div>
 <?php endif; ?>
