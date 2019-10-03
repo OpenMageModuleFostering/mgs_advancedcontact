@@ -1,3 +1,5 @@
+
+
 ## Original Package Description
 
 It will replace the default contact Form in Magento with an advance contact from which allow administrator to add custom fields at his need. Moreover, the administrator can add an online map to the contact page in order for the clients to have an upclose and convincing look at the shop. All the values of the fields will be sent in email to the administrator.
